@@ -6,7 +6,6 @@ import com.haroldo.minhasfinancas.model.entity.Usuario;
 import com.haroldo.minhasfinancas.model.repository.UsuarioRepository;
 import com.haroldo.minhasfinancas.service.impl.UsuarioServiceImpl;
 import org.assertj.core.api.Assertions;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;

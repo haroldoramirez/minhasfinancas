@@ -1,7 +1,5 @@
 package com.haroldo.minhasfinancas.service.impl;
 
-
-
 import com.haroldo.minhasfinancas.exception.ErroAutenticacaoException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
