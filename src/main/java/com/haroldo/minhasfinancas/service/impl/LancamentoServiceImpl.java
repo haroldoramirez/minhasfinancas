@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class LancamentoServiceImpl implements LancamentoService {
@@ -21,14 +22,6 @@ public class LancamentoServiceImpl implements LancamentoService {
 
     public LancamentoServiceImpl(LancamentoRepository repository) {
         this.repository = repository;
-    }
-
-    @Override
-    @Transactional
-    public Lancamento salvar(Lancamento lancamento) {
-        validar(lancamento);
-        lancamento.setStatus(StatusLancamento.PENDENTE);
-        return repository.save(lancamento);
     }
 
     @Override
@@ -56,7 +49,19 @@ public class LancamentoServiceImpl implements LancamentoService {
         if (lancamento.getTipo() == null) {
             throw new RegraNegocioException("Informe um Tipo de lançamento.");
         }
-        
+    }
+
+    @Override
+    public Optional<Lancamento> opterPorId(Long id) {
+        return repository.findById(id);
+    }
+
+    @Override
+    @Transactional
+    public Lancamento salvar(Lancamento lancamento) {
+        validar(lancamento);
+        lancamento.setStatus(StatusLancamento.PENDENTE);
+        return repository.save(lancamento);
     }
 
     @Override
@@ -76,14 +81,12 @@ public class LancamentoServiceImpl implements LancamentoService {
     @Override
     @Transactional(readOnly = true)
     public List<Lancamento> buscar(Lancamento lancamentoFiltro) {
-
         Example example = Example.of(lancamentoFiltro,
                 ExampleMatcher.matching()
                         .withIgnoreCase()
                         .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
 
         return repository.findAll(example);
-
     }
 
     @Override
