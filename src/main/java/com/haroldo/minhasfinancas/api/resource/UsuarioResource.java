@@ -1,6 +1,8 @@
 package com.haroldo.minhasfinancas.api.resource;
 
 import com.haroldo.minhasfinancas.api.dto.UsuarioDTO;
+import com.haroldo.minhasfinancas.api.dto.UsuarioLoginDTO;
+import com.haroldo.minhasfinancas.exception.ErroAutenticacaoException;
 import com.haroldo.minhasfinancas.exception.RegraNegocioException;
 import com.haroldo.minhasfinancas.model.entity.Usuario;
 import com.haroldo.minhasfinancas.service.UsuarioService;
@@ -45,4 +47,20 @@ public class UsuarioResource {
 
     }
 
+    @PostMapping("/autenticar")
+    public ResponseEntity autenticar(@RequestBody UsuarioLoginDTO dto) {
+
+        try {
+
+            Usuario usuarioAutenticado = service.autenticar(dto.getEmail(), dto.getSenha());
+
+            return ResponseEntity.ok(usuarioAutenticado);
+
+        } catch (ErroAutenticacaoException e) {
+
+            return ResponseEntity.badRequest().body(e.getMessage());
+
+        }
+
+    }
 }

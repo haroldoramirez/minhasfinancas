@@ -25,3 +25,5 @@ create table financas.lancamento
 	id_usuario bigint references financas.usuario(id),
 	data_cadastro date default now()
 )
+
+select * from financas.usuario;
