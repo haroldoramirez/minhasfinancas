@@ -14,7 +14,7 @@ import java.util.Optional;
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
 	
-	private UsuarioRepository repository;
+	private final UsuarioRepository repository;
 	
 	public UsuarioServiceImpl(UsuarioRepository repository) {
 
@@ -28,9 +28,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 
 		Optional<Usuario> usuario = repository.findByEmail(email);
 
-		if (!usuario.isPresent()) {
+		if (usuario.isEmpty())
 			throw new ErroAutenticacaoException("Usuário não encontrado para o email informado.");
-		}
+
 
 		if (!usuario.get().getSenha().equals(senha)) {
 			throw new ErroAutenticacaoException("Senha inválida.");

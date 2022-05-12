@@ -3,6 +3,7 @@ package com.haroldo.minhasfinancas.service.impl;
 import com.haroldo.minhasfinancas.exception.RegraNegocioException;
 import com.haroldo.minhasfinancas.model.entity.Lancamento;
 import com.haroldo.minhasfinancas.model.enums.StatusLancamento;
+import com.haroldo.minhasfinancas.model.enums.TipoLancamento;
 import com.haroldo.minhasfinancas.model.repository.LancamentoRepository;
 import com.haroldo.minhasfinancas.service.LancamentoService;
 import org.springframework.data.domain.Example;
@@ -18,10 +19,13 @@ import java.util.Optional;
 @Service
 public class LancamentoServiceImpl implements LancamentoService {
 
-    private LancamentoRepository repository;
+    private final LancamentoRepository repository;
 
     public LancamentoServiceImpl(LancamentoRepository repository) {
+
+        super();
         this.repository = repository;
+
     }
 
     @Override
@@ -54,6 +58,23 @@ public class LancamentoServiceImpl implements LancamentoService {
     @Override
     public Optional<Lancamento> opterPorId(Long id) {
         return repository.findById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BigDecimal obterSaldoPorUsuario(Long id) {
+
+        BigDecimal receitas = repository.obterSaldoPorTipoLancamentoUsuario(id, TipoLancamento.RECEITA.name());
+        BigDecimal despesas = repository.obterSaldoPorTipoLancamentoUsuario(id, TipoLancamento.DESPESA.name());
+
+        if (receitas == null)
+            receitas = BigDecimal.ZERO;
+
+        if (despesas == null)
+            despesas = BigDecimal.ZERO;
+
+        return receitas.subtract(despesas);
+
     }
 
     @Override

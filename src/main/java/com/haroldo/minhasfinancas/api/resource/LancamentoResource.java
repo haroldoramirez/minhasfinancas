@@ -1,5 +1,6 @@
 package com.haroldo.minhasfinancas.api.resource;
 
+import com.haroldo.minhasfinancas.api.dto.AtualizaStatusDTO;
 import com.haroldo.minhasfinancas.api.dto.LancamentoDTO;
 import com.haroldo.minhasfinancas.exception.RegraNegocioException;
 import com.haroldo.minhasfinancas.model.entity.Lancamento;
@@ -47,15 +48,41 @@ public class LancamentoResource {
     @PutMapping("{id}")
     public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody LancamentoDTO dto) {
 
-        return service.opterPorId(id).map(entity -> {
+        return service.opterPorId(id).map(entidade -> {
 
             try {
 
                 Lancamento lancamento = converter(dto);
-                lancamento.setId(entity.getId());
+                lancamento.setId(entidade.getId());
                 service.atualizar(lancamento);
                 return ResponseEntity.ok(lancamento);
 
+            } catch (RegraNegocioException e) {
+
+                return ResponseEntity.badRequest().body(e.getMessage());
+
+            }
+
+        }).orElseGet( () -> new ResponseEntity("Lançamento não encontrado na base de dados.", HttpStatus.BAD_REQUEST));
+
+    }
+
+    @PutMapping("{id}/atualiza-status")
+    public ResponseEntity atualizarStatus(@PathVariable("id") Long id, @RequestBody AtualizaStatusDTO dto) {
+
+        return service.opterPorId(id).map(entidade -> {
+
+            try {
+
+                StatusLancamento statusSelecionado = StatusLancamento.valueOf(dto.getStatus());
+
+                if (statusSelecionado == null) {
+                    return ResponseEntity.badRequest().body("Não foi possível atualizar o statos do lançamento, envie um status válido.");
+                }
+
+                entidade.setStatus(statusSelecionado);
+                service.atualizar(entidade);
+                return ResponseEntity.ok(entidade);
             } catch (RegraNegocioException e) {
 
                 return ResponseEntity.badRequest().body(e.getMessage());
@@ -94,7 +121,7 @@ public class LancamentoResource {
 
         Optional<Usuario> usuario = usuarioService.obterPorId(idUsuario);
 
-        if (!usuario.isPresent()) {
+        if (usuario.isEmpty()) {
             return ResponseEntity.badRequest().body("Não foi possível realizar a consulta. Usuário não encontrato para o Id informado.");
         } else {
             lancamentoFiltro.setUsuario(usuario.get());
