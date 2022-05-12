@@ -77,7 +77,7 @@ public class LancamentoResource {
                 StatusLancamento statusSelecionado = StatusLancamento.valueOf(dto.getStatus());
 
                 if (statusSelecionado == null) {
-                    return ResponseEntity.badRequest().body("Não foi possível atualizar o statos do lançamento, envie um status válido.");
+                    return ResponseEntity.badRequest().body("Não foi possível atualizar o status do lançamento, envie um status válido.");
                 }
 
                 entidade.setStatus(statusSelecionado);

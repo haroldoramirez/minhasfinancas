@@ -64,8 +64,8 @@ public class LancamentoServiceImpl implements LancamentoService {
     @Transactional(readOnly = true)
     public BigDecimal obterSaldoPorUsuario(Long id) {
 
-        BigDecimal receitas = repository.obterSaldoPorTipoLancamentoUsuario(id, TipoLancamento.RECEITA.name());
-        BigDecimal despesas = repository.obterSaldoPorTipoLancamentoUsuario(id, TipoLancamento.DESPESA.name());
+        BigDecimal receitas = repository.obterSaldoPorTipoLancamentoUsuario(id, TipoLancamento.RECEITA);
+        BigDecimal despesas = repository.obterSaldoPorTipoLancamentoUsuario(id, TipoLancamento.DESPESA);
 
         if (receitas == null)
             receitas = BigDecimal.ZERO;
@@ -102,7 +102,7 @@ public class LancamentoServiceImpl implements LancamentoService {
     @Override
     @Transactional(readOnly = true)
     public List<Lancamento> buscar(Lancamento lancamentoFiltro) {
-        Example example = Example.of(lancamentoFiltro,
+        Example<Lancamento> example = Example.of(lancamentoFiltro,
                 ExampleMatcher.matching()
                         .withIgnoreCase()
                         .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
